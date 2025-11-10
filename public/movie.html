@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Movie Details</title>
+
+    <!-- Favicon (tab icon) -->
+    <link rel="icon" href="/images/icon.png" type="image/png" />
+    <link rel="shortcut icon" href="/images/icon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/images/icon.png" />
+
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">
+        <img src="/images/icon.png" alt="MovieApp" class="brand-icon" />
+        <span>Movie<span class="accent">App</span></span>
+      </a>
+      <nav class="top-nav">
+        <div class="menu">
+          <button id="menuBtn" class="menu-btn">☰ Menu</button>
+          <ul id="menuDropdown" class="dropdown">
+            <li><a href="/">Home</a></li>
+            <li><a href="/watchlist.html">My Watchlist</a></li>
+            <li><a href="#" id="settingsLink">Account Settings</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main class="hero" style="min-height: auto; padding-top: 90px;">
+      <div class="hero-box">
+        <div id="content" class="details-content">
+          <p>Loading…</p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // menu
+      const menuBtn = document.getElementById("menuBtn");
+      const menuDropdown = document.getElementById("menuDropdown");
+      menuBtn.addEventListener("click", () => menuDropdown.classList.toggle("open"));
+      document.addEventListener("click", (e) => {
+        if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+          menuDropdown.classList.remove("open");
+        }
+      });
+      document.getElementById('settingsLink')?.addEventListener('click', (e)=>{
+        e.preventDefault();
+        alert("Account Settings stub — integrate later.");
+      });
+
+      // watchlist helpers
+      const WATCH_KEY = "watchlist.v1";
+      const getWatchlist = () => JSON.parse(localStorage.getItem(WATCH_KEY) || "[]");
+      const saveWatchlist = (l) => localStorage.setItem(WATCH_KEY, JSON.stringify(l));
+      const inWatchlist = (id) => getWatchlist().some(m => m.imdbID === id);
+      const addToWatch = (m) => { const l = getWatchlist(); if (!l.some(x=>x.imdbID===m.imdbID)) { l.push(m); saveWatchlist(l);} };
+      const removeFromWatch = (id) => saveWatchlist(getWatchlist().filter(m => m.imdbID !== id));
+
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      const content = document.getElementById("content");
+
+      (async function(){
+        try{
+          const r = await fetch(`/api/details?id=${encodeURIComponent(id)}`);
+          if(!r.ok) throw new Error("Failed to load details");
+          const m = await r.json();
+
+          const poster = (m.Poster && m.Poster !== "N/A") ? m.Poster : "https://via.placeholder.com/500x750?text=No+Image";
+
+          content.innerHTML = `
+            <img src="${poster}" alt="${m.Title}" />
+            <div class="details-info">
+              <h1>${m.Title} <span style="font-weight:400; color:#a2a9bb;">(${m.Year || ""})</span></h1>
+              <p><strong>Genre:</strong> ${m.Genre || "-"}</p>
+              <p><strong>Director:</strong> ${m.Director || "-"}</p>
+              <p><strong>Actors:</strong> ${m.Actors || "-"}</p>
+              <p><strong>IMDb Rating:</strong> ${m.imdbRating || "-"}</p>
+              <p><strong>Plot:</strong> ${m.Plot || "-"}</p>
+
+              <div style="display:flex; gap:10px; margin-top:10px;">
+                <a href="/" class="details-link back-btn">← Back</a>
+                <button id="wlBtn" class="wl-btn">${inWatchlist(m.imdbID) ? "✓ In Watchlist" : "+ Watchlist"}</button>
+              </div>
+            </div>
+          `;
+
+          document.getElementById("wlBtn").addEventListener("click", () => {
+            if (inWatchlist(m.imdbID)) { removeFromWatch(m.imdbID); }
+            else { addToWatch({ imdbID: m.imdbID, Title: m.Title, Poster: poster, Year: m.Year || "" }); }
+            const btn = document.getElementById("wlBtn");
+            btn.textContent = inWatchlist(m.imdbID) ? "✓ In Watchlist" : "+ Watchlist";
+            btn.classList.toggle("active", inWatchlist(m.imdbID));
+          });
+        }catch(err){
+          content.innerHTML = `<p style="color:red;">${err.message}</p>`;
+          console.error(err);
+        }
+      })();
+    </script>
+  </body>
+</html>

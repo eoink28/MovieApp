@@ -1,36 +1,108 @@
-// This file sets up a basic Node.js server using Express
-// It serves our main page (index.html) and other static files from the "public" folder.
-
-
-// Import the Express framework which makes building servers easier
 //
-const express = require("express");  
-
-// Import Node's built-in 'path' module to work with file and folder paths
+// server.js — Complete backend for MovieApp
+// ------------------------------------------
+// Serves the main site and provides two API routes:
+//   1. /api/search  — search for movies by title
+//   2. /api/details — get details by IMDb ID
 //
-const path = require("path");  
 
-// Create an instance of an Express application
+// Import required modules
+const express = require("express");
+const path = require("path");
+const axios = require("axios");
+require("dotenv").config();
+
+// Create an instance of an Express app
+const app = express();
+
+// Log startup
+console.log("🎬 Initializing MovieApp server...");
+
+// Serve all files from the 'public' folder
+app.use(express.static(path.join(__dirname, "public")));
+
+// Root route — send main page
+app.get("/", (req, res) => {
+  console.log("GET / - serving index.html");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 //
-const app = express();  
+// ============================
+// API: Movie search route
+// ============================
+app.get("/api/search", async (req, res) => {
+  const query = req.query.q;
+  console.log("➡️ Received /api/search with query:", query);
 
+  if (!query) {
+    console.warn("⚠️ Missing search query");
+    return res.status(400).json({ error: "Missing search query" });
+  }
 
-// Tell the server to make the "public" folder available to the browser
-// This allows files like index.html, CSS, and images to load properly
+  try {
+    const response = await axios.get("https://www.omdbapi.com/", {
+      params: {
+        apikey: process.env.OMDB_API_KEY,
+        s: query,
+      },
+      timeout: 5000,
+    });
+
+    console.log("OMDb search response:", response.data.Response);
+
+    if (response.data.Response === "False") {
+      console.warn("OMDb API returned error:", response.data.Error);
+      return res.status(404).json({ error: response.data.Error });
+    }
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("❌ Error fetching from OMDb:", error.message);
+    res.status(500).json({ error: "Server error fetching search results" });
+  }
+});
+
 //
-app.use(express.static(path.join(__dirname, "public")));  
+// ============================
+// API: Movie details route
+// ============================
+app.get("/api/details", async (req, res) => {
+  const imdbID = req.query.id;
+  console.log("➡️ Received /api/details with id:", imdbID);
 
-// When someone visits http://localhost:3000/, send them the index.html file from the public folder
-//
-app.get("/", (req, res) =>  
-{  
-    res.sendFile(path.join(__dirname, "public", "index.html"));  
-});  
+  if (!imdbID) {
+    console.warn("⚠️ Missing IMDb ID");
+    return res.status(400).json({ error: "Missing IMDb ID" });
+  }
 
-// Define the port number that our server will run on
-//
-const PORT = 3000;  
+  try {
+    const response = await axios.get("https://www.omdbapi.com/", {
+      params: {
+        apikey: process.env.OMDB_API_KEY,
+        i: imdbID,
+        plot: "full",
+      },
+      timeout: 5000,
+    });
 
-// Start the server and print a message to the console so we know it's running
-//
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));  
+    if (response.data.Response === "False") {
+      console.warn("OMDb API returned error:", response.data.Error);
+      return res.status(404).json({ error: response.data.Error });
+    }
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("❌ Error fetching details from OMDb:", error.message);
+    res.status(500).json({ error: "Server error fetching movie details" });
+  }
+});
+
+// Start server
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(
+    `🔑 OMDb API Key status: ${process.env.OMDB_API_KEY ? "Loaded" : "Missing!"}`
+  );
+});
