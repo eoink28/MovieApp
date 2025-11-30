@@ -1,166 +1,269 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>MovieApp — Discover & Explore</title>
 
-    <!-- Favicon (tab icon) -->
-    <link rel="icon" href="/images/icon.png" type="image/png" />
-    <link rel="shortcut icon" href="/images/icon.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/images/icon.png" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MovieApp — Discover & Explore</title>
 
-    <link rel="stylesheet" href="index.css" />
-  </head>
+  <!-- Favicon (tab icon) -->
+  <link rel="icon" href="/images/icon.png" type="image/png" />
+  <link rel="shortcut icon" href="/images/icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/images/icon.png" />
 
-  <body>
-    <!-- Header -->
-    <header class="site-header">
-      <a class="brand" href="/">
-        <img src="/images/icon.png" alt="MovieApp" class="brand-icon" />
-        <span>Movie<span class="accent">App</span></span>
-      </a>
+  <link rel="stylesheet" href="index.css" />
+  <script src="theme.js"></script>
+</head>
 
-      <nav class="top-nav">
-        <!-- App menu -->
-        <div class="menu">
-          <button id="menuBtn" class="menu-btn" aria-haspopup="true" aria-expanded="false">
-            ☰ Menu
-          </button>
-          <ul id="menuDropdown" class="dropdown">
-            <li><a href="/">Home</a></li>
-            <li><a href="/watchlist.html">My Watchlist</a></li>
-            <li><a href="#" id="settingsLink">Account Settings</a></li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <a class="brand" href="/">
+      <img src="/images/icon.png" alt="MovieApp" class="brand-icon" />
+      <span>Movie<span class="accent">App</span></span>
+    </a>
 
-    <!-- Hero / Search (compact) -->
-    <main class="hero hero-compact">
-      <div class="hero-box hero-compact-box">
-        <div class="hero-inner">
-          <h1 class="hero-title">Find your next favorite movie</h1>
-          <p class="hero-sub">Search by title, actor, director, or genre</p>
-
-          <form id="searchForm" class="search-form" autocomplete="off">
-            <input id="q" name="q" type="search" placeholder="Search movies..." />
-            <button type="submit" class="search-btn">Search</button>
-          </form>
-
-          <!-- Search Results -->
-          <div id="resultsContainer" class="results results-large"></div>
-        </div>
+    <nav class="top-nav">
+      <div class="menu">
+        <button id="menuBtn" class="menu-btn" aria-haspopup="true" aria-expanded="false">
+          ☰ Menu
+        </button>
+        <ul id="menuDropdown" class="dropdown">
+          <li><a href="/">Home</a></li>
+          <li><a href="/watchlist.html">My Watchlist</a></li>
+          <li><a href="/settings.html">Account Settings</a></li>
+        </ul>
       </div>
-    </main>
+    </nav>
+  </header>
 
-    <!-- Top Rated 20 — horizontal strip -->
-    <section id="topRatedSection" class="toprated-section">
-      <div class="section-header">
-        <h2>Top Rated Movies</h2>
+  <main class="hero hero-compact">
+    <div class="hero-box hero-compact-box">
+      <div class="hero-inner">
+        <h1 class="hero-title">Find your next favorite movie</h1>
+        <p class="hero-sub">Search by title, actor, director, or genre</p>
+
+        <form id="searchForm" class="search-form" autocomplete="off">
+          <input id="q" name="q" type="search" placeholder="Search movies..." />
+          <button type="submit" class="search-btn">Search</button>
+        </form>
+
+        <!-- Search Results -->
+        <div id="resultsContainer" class="results results-large"></div>
       </div>
-      <div id="topRatedStrip" class="toprated-strip">
-        <p class="strip-loading">Loading top rated movies...</p>
-      </div>
-    </section>
+    </div>
+  </main>
 
-    <!-- Curated Categories -->
-    <section class="category-section">
-      <div class="section-header"><h2>Sci-Fi & Space</h2></div>
-      <div id="strip-sci" class="toprated-strip"><p class="strip-loading">Loading…</p></div>
-    </section>
+  <!-- Top Rated 20 — horizontal strip -->
+  <section id="topRatedSection" class="toprated-section">
+    <div class="section-header">
+      <h2>Top Rated Movies</h2>
+    </div>
+    <div id="topRatedStrip" class="toprated-strip">
+      <p class="strip-loading">Loading top rated movies...</p>
+    </div>
+  </section>
 
-    <section class="category-section">
-      <div class="section-header"><h2>Crime & Mafia</h2></div>
-      <div id="strip-crime" class="toprated-strip"><p class="strip-loading">Loading…</p></div>
-    </section>
+  <!-- Curated Categories -->
+  <section class="category-section">
+    <div class="section-header">
+      <h2>Sci-Fi & Space</h2>
+    </div>
+    <div id="strip-sci" class="toprated-strip">
+      <p class="strip-loading">Loading…</p>
+    </div>
+  </section>
 
-    <section class="category-section">
-      <div class="section-header"><h2>Fantasy & Adventure</h2></div>
-      <div id="strip-fantasy" class="toprated-strip"><p class="strip-loading">Loading…</p></div>
-    </section>
+  <section class="category-section">
+    <div class="section-header">
+      <h2>Crime & Mafia</h2>
+    </div>
+    <div id="strip-crime" class="toprated-strip">
+      <p class="strip-loading">Loading…</p>
+    </div>
+  </section>
 
-    <section class="category-section">
-      <div class="section-header"><h2>Animation & Family</h2></div>
-      <div id="strip-family" class="toprated-strip"><p class="strip-loading">Loading…</p></div>
-    </section>
+  <section class="category-section">
+    <div class="section-header">
+      <h2>Fantasy & Adventure</h2>
+    </div>
+    <div id="strip-fantasy" class="toprated-strip">
+      <p class="strip-loading">Loading…</p>
+    </div>
+  </section>
 
-    <script>
-      // ===== Mini client-side watchlist API (localStorage) =====
-      const WATCH_KEY = "watchlist.v1";
-      function getWatchlist() {
-        try { return JSON.parse(localStorage.getItem(WATCH_KEY)) || []; }
-        catch { return []; }
-      }
-      function saveWatchlist(list) { localStorage.setItem(WATCH_KEY, JSON.stringify(list)); }
-      function inWatchlist(id) { return getWatchlist().some(m => m.imdbID === id); }
-      function addToWatchlist(item) {
-        const list = getWatchlist();
-        if (!list.some(m => m.imdbID === item.imdbID)) { list.push(item); saveWatchlist(list); }
-      }
-      function removeFromWatchlist(id) { saveWatchlist(getWatchlist().filter(m => m.imdbID !== id)); }
+  <section class="category-section">
+    <div class="section-header">
+      <h2>Animation & Family</h2>
+    </div>
+    <div id="strip-family" class="toprated-strip">
+      <p class="strip-loading">Loading…</p>
+    </div>
+  </section>
 
-      // ===== Menu =====
-      const menuBtn = document.getElementById("menuBtn");
-      const menuDropdown = document.getElementById("menuDropdown");
-      menuBtn.addEventListener("click", () => {
-        const open = menuDropdown.classList.toggle("open");
-        menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-      });
-      document.addEventListener("click", (e) => {
-        if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
-          menuDropdown.classList.remove("open");
-          menuBtn.setAttribute("aria-expanded", "false");
-        }
-      });
-      document.getElementById('settingsLink').addEventListener('click', (e)=>{
-        e.preventDefault();
-        alert("Account Settings stub — integrate later.");
-      });
+  <script>
+    // ===== Auth & Watchlist API =====
+    let currentUser = null;
 
-      // ===== Top Rated visibility =====
-      const topRatedSection = document.getElementById("topRatedSection");
-      function hideTopRated() { topRatedSection.classList.add("hidden"); document.querySelectorAll(".category-section").forEach(s => s.classList.add("hidden")); }
-      function showTopRated() { topRatedSection.classList.remove("hidden"); document.querySelectorAll(".category-section").forEach(s => s.classList.remove("hidden")); }
-
-      // ===== Search =====
-      const searchForm = document.getElementById("searchForm");
-      const input = document.getElementById("q");
-      const resultsContainer = document.getElementById("resultsContainer");
-
-      input.addEventListener("input", () => {
-        if (input.value.trim() === "") {
-          resultsContainer.innerHTML = "";
-          showTopRated();
-        }
-      });
-
-      searchForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const query = input.value.trim();
-        if (!query) return;
-
-        hideTopRated();
-        resultsContainer.innerHTML = "<p>Loading...</p>";
-
-        try {
-          const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-          if (!res.ok) throw new Error("Backend returned " + res.status);
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/user");
+        if (res.ok) {
           const data = await res.json();
-
-          if (!data.Search) {
-            resultsContainer.innerHTML = "<p>No results found.</p>";
-            return;
-          }
-          displayResults(data.Search);
-        } catch (err) {
-          console.error("Search error:", err);
-          resultsContainer.innerHTML = `<p style='color:red;'>${err.message}</p>`;
+          currentUser = data.user;
+          updateAuthUI();
+          loadWatchlist(); // Load watchlist IDs for buttons
+        } else {
+          currentUser = null;
+          updateAuthUI();
         }
-      });
+      } catch (err) {
+        console.error("Auth check failed", err);
+      }
+    }
 
-      function imgTag(src, alt) {
-        return `
+    function updateAuthUI() {
+      const settingsLink = document.getElementById("settingsLink");
+      if (currentUser) {
+        settingsLink.textContent = `Logout (${currentUser.username})`;
+        settingsLink.href = "#";
+        settingsLink.onclick = async (e) => {
+          e.preventDefault();
+          await fetch("/api/logout", { method: "POST" });
+          window.location.reload();
+        };
+      } else {
+        settingsLink.textContent = "Login";
+        settingsLink.href = "/login.html";
+        settingsLink.onclick = null;
+      }
+    }
+
+    // Watchlist State (Set of IDs for quick lookup)
+    let watchlistIds = new Set();
+
+    async function loadWatchlist() {
+      if (!currentUser) return;
+      try {
+        const res = await fetch("/api/watchlist");
+        if (res.ok) {
+          const list = await res.json();
+          watchlistIds = new Set(list.map(m => m.imdb_id));
+          updateAllButtons();
+        }
+      } catch (err) {
+        console.error("Load watchlist failed", err);
+      }
+    }
+
+    function inWatchlist(id) {
+      return watchlistIds.has(id);
+    }
+
+    async function toggleWatchlist(item, btn) {
+      if (!currentUser) {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      const id = item.imdbID;
+      const action = inWatchlist(id) ? "DELETE" : "POST";
+      const url = action === "DELETE" ? `/api/watchlist/${id}` : "/api/watchlist";
+      const body = action === "POST" ? JSON.stringify(item) : null;
+
+      // Optimistic UI update
+      if (action === "DELETE") watchlistIds.delete(id);
+      else watchlistIds.add(id);
+      updateButtonState(btn, id);
+
+      try {
+        const res = await fetch(url, {
+          method: action,
+          headers: { "Content-Type": "application/json" },
+          body: body
+        });
+        if (!res.ok) throw new Error("Failed");
+      } catch (err) {
+        // Revert on error
+        if (action === "DELETE") watchlistIds.add(id);
+        else watchlistIds.delete(id);
+        updateButtonState(btn, id);
+        alert("Error updating watchlist");
+      }
+    }
+
+    function updateButtonState(btn, id) {
+      const active = inWatchlist(id);
+      btn.textContent = active ? "✓ In Watchlist" : "+ Watchlist";
+      btn.classList.toggle("active", active);
+    }
+
+    function updateAllButtons() {
+      document.querySelectorAll("[data-watch]").forEach(btn => {
+        updateButtonState(btn, btn.getAttribute("data-watch"));
+      });
+    }
+
+    // ===== Menu =====
+    const menuBtn = document.getElementById("menuBtn");
+    const menuDropdown = document.getElementById("menuDropdown");
+    menuBtn.addEventListener("click", () => {
+      const open = menuDropdown.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    document.addEventListener("click", (e) => {
+      if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+        menuDropdown.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    // Initialize
+    checkAuth();
+
+    // ===== Top Rated visibility =====
+    const topRatedSection = document.getElementById("topRatedSection");
+    function hideTopRated() { topRatedSection.classList.add("hidden"); document.querySelectorAll(".category-section").forEach(s => s.classList.add("hidden")); }
+    function showTopRated() { topRatedSection.classList.remove("hidden"); document.querySelectorAll(".category-section").forEach(s => s.classList.remove("hidden")); }
+
+    // ===== Search =====
+    const searchForm = document.getElementById("searchForm");
+    const input = document.getElementById("q");
+    const resultsContainer = document.getElementById("resultsContainer");
+
+    input.addEventListener("input", () => {
+      if (input.value.trim() === "") {
+        resultsContainer.innerHTML = "";
+        showTopRated();
+      }
+    });
+
+    searchForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const query = input.value.trim();
+      if (!query) return;
+
+      hideTopRated();
+      resultsContainer.innerHTML = "<p>Loading...</p>";
+
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Backend returned " + res.status);
+        const data = await res.json();
+
+        if (!data.Search) {
+          resultsContainer.innerHTML = "<p>No results found.</p>";
+          return;
+        }
+        displayResults(data.Search);
+      } catch (err) {
+        console.error("Search error:", err);
+        resultsContainer.innerHTML = `<p style='color:red;'>${err.message}</p>`;
+      }
+    });
+
+    function imgTag(src, alt) {
+      return `
           <img
             src="${src}"
             alt="${alt}"
@@ -168,37 +271,19 @@
             onerror="this.onerror=null;this.src='https://via.placeholder.com/500x750?text=No+Image';"
           >
         `;
-      }
+    }
 
-      function watchBtn(id, title, poster, year) {
-        const active = inWatchlist(id);
-        const label = active ? "✓ In Watchlist" : "+ Watchlist";
-        const cls = active ? "wl-btn active" : "wl-btn";
-        return `<button class="${cls}" data-watch="${id}" aria-label="${label}">${label}</button>`;
-      }
+    function watchBtn(id, title, poster, year) {
+      const active = inWatchlist(id);
+      const label = active ? "✓ In Watchlist" : "+ Watchlist";
+      const cls = active ? "wl-btn active" : "wl-btn";
+      return `<button class="${cls}" data-watch="${id}" aria-label="${label}">${label}</button>`;
+    }
 
-      function wireWatchButtons(scope=document) {
-        scope.querySelectorAll("[data-watch]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const id = btn.getAttribute("data-watch");
-            const card = btn.closest(".movie-card");
-            const title = card?.getAttribute("data-title") || "";
-            const poster = card?.getAttribute("data-poster") || "";
-            const year = card?.getAttribute("data-year") || "";
-
-            if (inWatchlist(id)) { removeFromWatchlist(id); }
-            else { addToWatchlist({ imdbID: id, Title: title, Poster: poster, Year: year }); }
-
-            btn.textContent = inWatchlist(id) ? "✓ In Watchlist" : "+ Watchlist";
-            btn.classList.toggle("active", inWatchlist(id));
-          });
-        });
-      }
-
-      function cardHTML(movie, large=false) {
-        const poster = (movie.Poster && movie.Poster !== "N/A") ? movie.Poster : "https://via.placeholder.com/500x750?text=No+Image";
-        const sizeClass = large ? "movie-card movie-card-xl" : "movie-card movie-card-lg";
-        return `
+    function cardHTML(movie, large = false) {
+      const poster = (movie.Poster && movie.Poster !== "N/A") ? movie.Poster : "https://via.placeholder.com/500x750?text=No+Image";
+      const sizeClass = large ? "movie-card movie-card-xl" : "movie-card movie-card-lg";
+      return `
           <div class="${sizeClass}" data-title="${movie.Title}" data-poster="${poster}" data-year="${movie.Year || ""}">
             ${imgTag(poster, movie.Title)}
             <div class="overlay">
@@ -210,90 +295,104 @@
             </div>
           </div>
         `;
-      }
+    }
 
-      function displayResults(results) {
-        resultsContainer.innerHTML = "";
-        results.forEach((movie) => {
-          const card = document.createElement("div");
-          card.className = "result-card";
-          card.innerHTML = cardHTML(movie, false);
-          card.addEventListener("click", (e) => {
-            if (e.target.closest(".wl-btn") || e.target.closest(".details-link")) return;
-            window.location.href = `/movie.html?id=${movie.imdbID}`;
-          });
-          resultsContainer.appendChild(card);
+    function displayResults(results) {
+      resultsContainer.innerHTML = "";
+      results.forEach((movie) => {
+        const card = document.createElement("div");
+        card.className = "result-card";
+        card.innerHTML = cardHTML(movie, false);
+        card.addEventListener("click", (e) => {
+          if (e.target.closest(".wl-btn") || e.target.closest(".details-link")) return;
+          window.location.href = `/movie.html?id=${movie.imdbID}`;
         });
-        wireWatchButtons(resultsContainer);
-      }
+        resultsContainer.appendChild(card);
+      });
+      wireWatchButtons(resultsContainer);
+    }
 
-      // ===== Top Rated 20 (static IDs) + curated IDs =====
-      const TOP20_IMDB_IDS = [
-        "tt0111161","tt0068646","tt0468569","tt0071562","tt0050083",
-        "tt0108052","tt0167260","tt0110912","tt0120737","tt0060196",
-        "tt0109830","tt0133093","tt1375666","tt0167261","tt0080684",
-        "tt0137523","tt0120815","tt0816692","tt0114369","tt0118799"
-      ];
+    function wireWatchButtons(container) {
+      container.querySelectorAll(".wl-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute("data-watch");
+          const card = btn.closest(".movie-card") || btn.closest(".strip-card") || btn.closest(".result-card");
+          const title = card.getAttribute("data-title");
+          const poster = card.getAttribute("data-poster");
+          const year = card.getAttribute("data-year");
+          toggleWatchlist({ imdbID: id, Title: title, Poster: poster, Year: year }, btn);
+        });
+      });
+    }
 
-      const SCI_FI_IDS = [
-        "tt0133093","tt0816692","tt0076759","tt0080684","tt0086190",
-        "tt0062622","tt0078748","tt0083658","tt1856101","tt0181689",
-        "tt0103064","tt0119116","tt1375666","tt0082971","tt0120915"
-      ];
-      const CRIME_IDS = [
-        "tt0068646","tt0071562","tt0099685","tt0112641","tt0110912",
-        "tt0113277","tt0407887","tt0112384","tt0095016","tt0209144",
-        "tt0114814","tt1130884","tt0094226","tt0317248","tt0993846"
-      ];
-      const FANTASY_IDS = [
-        "tt0120737","tt0167261","tt0167260","tt0241527","tt0304141",
-        "tt0325980","tt0903624","tt0126029","tt0107290","tt0298148",
-        "tt0103639","tt1959490","tt1201607","tt0330373","tt0816692"
-      ];
-      const FAMILY_ANIM_IDS = [
-        "tt0114709","tt0435761","tt0266543","tt0910970","tt0317705",
-        "tt0245429","tt0126029","tt2380307","tt2294629","tt2096673",
-        "tt1979388","tt3778644","tt1453405","tt4520988","tt2948356"
-      ];
+    const TOP20_IMDB_IDS = [
+      "tt0111161", "tt0068646", "tt0468569", "tt0071562", "tt0050083",
+      "tt0108052", "tt0167260", "tt0110912", "tt0120737", "tt0060196",
+      "tt0109830", "tt0133093", "tt1375666", "tt0167261", "tt0080684",
+      "tt0137523", "tt0120815", "tt0816692", "tt0114369", "tt0118799"
+    ];
 
-      async function loadIDsToStrip(containerId, ids, withRatings=false) {
-        const strip = document.getElementById(containerId);
-        try {
-          const details = await Promise.all(
-            ids.map(async (id) => {
-              const r = await fetch(`/api/details?id=${id}`);
-              return r.ok ? r.json() : null;
-            })
-          );
-          const items = details.filter(Boolean);
-          strip.innerHTML = "";
-          items.forEach((m) => {
-            const el = document.createElement("div");
-            el.className = "strip-card";
-            el.innerHTML = `
+    const SCI_FI_IDS = [
+      "tt0133093", "tt0816692", "tt0076759", "tt0080684", "tt0086190",
+      "tt0062622", "tt0078748", "tt0083658", "tt1856101", "tt0181689",
+      "tt0103064", "tt0119116", "tt1375666", "tt0082971", "tt0120915"
+    ];
+    const CRIME_IDS = [
+      "tt0068646", "tt0071562", "tt0099685", "tt0112641", "tt0110912",
+      "tt0113277", "tt0407887", "tt0112384", "tt0095016", "tt0209144",
+      "tt0114814", "tt1130884", "tt0094226", "tt0317248", "tt0993846"
+    ];
+    const FANTASY_IDS = [
+      "tt0120737", "tt0167261", "tt0167260", "tt0241527", "tt0304141",
+      "tt0325980", "tt0903624", "tt0126029", "tt0107290", "tt0298148",
+      "tt0103639", "tt1959490", "tt1201607", "tt0330373", "tt0816692"
+    ];
+    const FAMILY_ANIM_IDS = [
+      "tt0114709", "tt0435761", "tt0266543", "tt0910970", "tt0317705",
+      "tt0245429", "tt0126029", "tt2380307", "tt2294629", "tt2096673",
+      "tt1979388", "tt3778644", "tt1453405", "tt4520988", "tt2948356"
+    ];
+
+    async function loadIDsToStrip(containerId, ids, withRatings = false) {
+      const strip = document.getElementById(containerId);
+      try {
+        const details = await Promise.all(
+          ids.map(async (id) => {
+            const r = await fetch(`/api/details?id=${id}`);
+            return r.ok ? r.json() : null;
+          })
+        );
+        const items = details.filter(Boolean);
+        strip.innerHTML = "";
+        items.forEach((m) => {
+          const el = document.createElement("div");
+          el.className = "strip-card";
+          el.innerHTML = `
               ${cardHTML(m, true)}
               ${withRatings ? `<div class="badge">★ ${m.imdbRating || "-"}</div>` : ""}
-            `;
-            el.addEventListener("click", (e) => {
-              if (e.target.closest(".wl-btn") || e.target.closest(".details-link")) return;
-              window.location.href = `/movie.html?id=${m.imdbID}`;
-            });
-            strip.appendChild(el);
+      `;
+          el.addEventListener("click", (e) => {
+            if (e.target.closest(".wl-btn") || e.target.closest(".details-link")) return;
+            window.location.href = `/movie.html?id=${m.imdbID}`;
           });
-          wireWatchButtons(strip);
-        } catch (err) {
-          console.error("Strip load error:", err);
-          strip.innerHTML = "<p style='color:red;'>Error loading.</p>";
-        }
+          strip.appendChild(el);
+        });
+        wireWatchButtons(strip);
+      } catch (err) {
+        console.error("Strip load error:", err);
+        strip.innerHTML = "<p style='color:red;'>Error loading.</p>";
       }
+    }
 
-      // Initial load
-      showTopRated();
-      loadIDsToStrip("topRatedStrip", TOP20_IMDB_IDS, true);
-      loadIDsToStrip("strip-sci", SCI_FI_IDS);
-      loadIDsToStrip("strip-crime", CRIME_IDS);
-      loadIDsToStrip("strip-fantasy", FANTASY_IDS);
-      loadIDsToStrip("strip-family", FAMILY_ANIM_IDS);
-    </script>
-  </body>
+    // Initial load
+    showTopRated();
+    loadIDsToStrip("topRatedStrip", TOP20_IMDB_IDS, true);
+    loadIDsToStrip("strip-sci", SCI_FI_IDS);
+    loadIDsToStrip("strip-crime", CRIME_IDS);
+    loadIDsToStrip("strip-fantasy", FANTASY_IDS);
+    loadIDsToStrip("strip-family", FAMILY_ANIM_IDS);
+  </script>
+</body>
+
 </html>

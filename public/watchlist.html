@@ -1,86 +1,110 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>My Watchlist — MovieApp</title>
 
-    <!-- Favicon (tab icon) -->
-    <link rel="icon" href="/images/icon.png" type="image/png" />
-    <link rel="shortcut icon" href="/images/icon.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/images/icon.png" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Watchlist — MovieApp</title>
+  <link rel="icon" href="/images/icon.png" type="image/png" />
+  <link rel="shortcut icon" href="/images/icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/images/icon.png" />
+  <link rel="stylesheet" href="index.css" />
+  <script src="theme.js"></script>
+</head>
 
-    <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="brand" href="/">
-        <img src="/images/icon.png" alt="MovieApp" class="brand-icon" />
-        <span>Movie<span class="accent">App</span></span>
-      </a>
-      <nav class="top-nav">
-        <div class="menu">
-          <button id="menuBtn" class="menu-btn">☰ Menu</button>
-          <ul id="menuDropdown" class="dropdown">
-            <li><a href="/">Home</a></li>
-            <li><a href="/watchlist.html">My Watchlist</a></li>
-            <li><a href="#" id="settingsLink">Account Settings</a></li>
-          </ul>
-        </div>
-      </nav>
-    </header>
-
-    <main class="hero" style="min-height:auto; padding-top:90px;">
-      <div class="hero-box">
-        <div class="section-header">
-          <h2>My Watchlist</h2>
-        </div>
-
-        <div id="grid" class="results results-large"></div>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <img src="/images/icon.png" alt="MovieApp" class="brand-icon" />
+      <span>Movie<span class="accent">App</span></span>
+    </a>
+    <nav class="top-nav">
+      <div class="menu">
+        <button id="menuBtn" class="menu-btn" aria-haspopup="true" aria-expanded="false">
+          ☰ Menu
+        </button>
+        <ul id="menuDropdown" class="dropdown">
+          <li><a href="/">Home</a></li>
+          <li><a href="/watchlist.html">My Watchlist</a></li>
+          <li><a href="/settings.html">Account Settings</a></li>
+        </ul>
       </div>
-    </main>
+    </nav>
+  </header>
 
-    <script>
-      // menu
-      const menuBtn = document.getElementById("menuBtn");
-      const menuDropdown = document.getElementById("menuDropdown");
-      menuBtn.addEventListener("click", () => menuDropdown.classList.toggle("open"));
-      document.addEventListener("click", (e) => {
-        if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
-          menuDropdown.classList.remove("open");
+  <main class="hero" style="min-height:auto; padding-top:90px;">
+    <div class="hero-box">
+      <div class="section-header">
+        <h2>My Watchlist</h2>
+      </div>
+
+      <div id="grid" class="results results-large"></div>
+    </div>
+  </main>
+
+  <script>
+    // menu
+    const menuBtn = document.getElementById("menuBtn");
+    const menuDropdown = document.getElementById("menuDropdown");
+    menuBtn.addEventListener("click", () => menuDropdown.classList.toggle("open"));
+    document.addEventListener("click", (e) => {
+      if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+        menuDropdown.classList.remove("open");
+      }
+    });
+
+    // Auth check
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/user");
+        if (!res.ok) {
+          window.location.href = "/login.html"; // Redirect if not logged in
+        } else {
+          render();
         }
-      });
-      document.getElementById('settingsLink')?.addEventListener('click', (e)=>{
-        e.preventDefault();
-        alert("Account Settings stub — integrate later.");
-      });
+      } catch (err) {
+        console.error("Auth check failed", err);
+      }
+    }
 
-      // watchlist
-      const WATCH_KEY = "watchlist.v1";
-      const getWatchlist = () => JSON.parse(localStorage.getItem(WATCH_KEY) || "[]");
-      const saveWatchlist = (l) => localStorage.setItem(WATCH_KEY, JSON.stringify(l));
-      const removeFromWatch = (id) => { saveWatchlist(getWatchlist().filter(m => m.imdbID !== id)); render(); };
+    const grid = document.getElementById("grid");
 
-      const grid = document.getElementById("grid");
-
-      function cardHTML(m) {
-        const poster = (m.Poster && m.Poster !== "N/A") ? m.Poster : "https://via.placeholder.com/500x750?text=No+Image";
-        return `
+    function cardHTML(m) {
+      const poster = (m.poster && m.poster !== "N/A") ? m.poster : "https://via.placeholder.com/500x750?text=No+Image";
+      return `
           <div class="movie-card movie-card-lg">
-            <img src="${poster}" alt="${m.Title}" />
+            <img src="${poster}" alt="${m.title}" />
             <div class="overlay">
-              <h3>${m.Title}</h3>
+              <h3>${m.title}</h3>
               <div class="overlay-actions">
-                <a class="details-link" href="/movie.html?id=${m.imdbID}">Details</a>
-                <button class="wl-btn active" data-remove="${m.imdbID}">Remove</button>
+                <a class="details-link" href="/movie.html?id=${m.imdb_id}">Details</a>
+                <button class="wl-btn active" data-remove="${m.imdb_id}">Remove</button>
               </div>
             </div>
           </div>
         `;
-      }
+    }
 
-      function render() {
-        const list = getWatchlist();
+    async function removeFromWatch(id) {
+      try {
+        const res = await fetch(`/api/watchlist/${id}`, { method: "DELETE" });
+        if (res.ok) {
+          render();
+        } else {
+          alert("Failed to remove movie");
+        }
+      } catch (err) {
+        console.error("Remove failed", err);
+      }
+    }
+
+    async function render() {
+      try {
+        const res = await fetch("/api/watchlist");
+        if (!res.ok) throw new Error("Failed to fetch watchlist");
+
+        const list = await res.json();
+
         if (list.length === 0) {
           grid.innerHTML = `<p class="strip-loading">Your watchlist is empty. Browse and add some movies!</p>`;
           return;
@@ -96,9 +120,13 @@
         grid.querySelectorAll("[data-remove]").forEach(btn => {
           btn.addEventListener("click", () => removeFromWatch(btn.getAttribute("data-remove")));
         });
+      } catch (err) {
+        grid.innerHTML = `<p style="color:red;">Error loading watchlist: ${err.message}</p>`;
       }
+    }
 
-      render();
-    </script>
-  </body>
+    checkAuth();
+  </script>
+</body>
+
 </html>

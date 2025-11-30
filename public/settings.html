@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Settings — MovieApp</title>
+    <link rel="icon" href="/images/icon.png" type="image/png" />
+    <link rel="stylesheet" href="index.css" />
+    <script src="theme.js"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <a class="brand" href="/">
+            <img src="/images/icon.png" alt="MovieApp" class="brand-icon" />
+            <span>Movie<span class="accent">App</span></span>
+        </a>
+
+        <nav class="top-nav">
+            <div class="menu">
+                <button id="menuBtn" class="menu-btn" aria-haspopup="true" aria-expanded="false">
+                    ☰ Menu
+                </button>
+                <ul id="menuDropdown" class="dropdown">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/watchlist.html">My Watchlist</a></li>
+                    <li><a href="/settings.html">Account Settings</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="settings-container">
+        <div class="settings-card">
+            <div class="settings-section">
+                <h2>Appearance</h2>
+                <div class="setting-item">
+                    <span class="setting-label">Theme</span>
+                    <button id="themeToggleBtn" class="btn-primary">Switch to Light Mode</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>Account</h2>
+                <div class="setting-item">
+                    <span class="setting-label">Logged in as: <strong id="usernameDisplay">...</strong></span>
+                </div>
+                <div class="setting-item">
+                    <button id="logoutBtn" class="btn-danger">Logout</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Menu
+        const menuBtn = document.getElementById("menuBtn");
+        const menuDropdown = document.getElementById("menuDropdown");
+        menuBtn.addEventListener("click", () => {
+            const open = menuDropdown.classList.toggle("open");
+            menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+        document.addEventListener("click", (e) => {
+            if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+                menuDropdown.classList.remove("open");
+                menuBtn.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        // Theme Toggle
+        const themeBtn = document.getElementById("themeToggleBtn");
+        function updateThemeBtnText() {
+            const current = getSavedTheme();
+            themeBtn.textContent = current === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode";
+        }
+        updateThemeBtnText();
+
+        themeBtn.addEventListener("click", () => {
+            toggleTheme();
+            updateThemeBtnText();
+        });
+
+        // Auth & Logout
+        async function init() {
+            try {
+                const res = await fetch("/api/user");
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById("usernameDisplay").textContent = data.user.username;
+                } else {
+                    window.location.href = "/login.html";
+                }
+            } catch (err) {
+                console.error("Auth check error", err);
+            }
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            try {
+                await fetch("/api/logout", { method: "POST" });
+                window.location.href = "/login.html";
+            } catch (err) {
+                alert("Logout failed");
+            }
+        });
+
+        init();
+    </script>
+</body>
+
+</html>
