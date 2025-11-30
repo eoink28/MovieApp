@@ -195,6 +195,62 @@ app.delete("/api/watchlist/:imdbID", requireAuth, async (req, res) => {
   }
 });
 
+// ============================
+// API: Watched
+// ============================
+
+// Get Watched
+app.get("/api/watched", requireAuth, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM watched WHERE user_id = $1 ORDER BY created_at DESC",
+      [req.session.userId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Get watched error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Add to Watched (with optional comment). If exists, update comment.
+app.post("/api/watched", requireAuth, async (req, res) => {
+  const { imdbID, Title, Poster, Year, comment } = req.body;
+  if (!imdbID || !Title) {
+    return res.status(400).json({ error: "Missing movie details" });
+  }
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO watched (user_id, imdb_id, title, poster, year, comment)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (user_id, imdb_id) DO UPDATE SET comment = EXCLUDED.comment
+       RETURNING *`,
+      [req.session.userId, imdbID, Title, Poster, Year, comment]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("Add watched error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Remove from Watched
+app.delete("/api/watched/:imdbID", requireAuth, async (req, res) => {
+  const { imdbID } = req.params;
+  try {
+    await pool.query("DELETE FROM watched WHERE user_id = $1 AND imdb_id = $2", [
+      req.session.userId,
+      imdbID,
+    ]);
+    res.json({ message: "Removed from watched" });
+  } catch (err) {
+    console.error("Remove watched error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 //
 // ============================
 // API: Movie search route

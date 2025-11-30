@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>My Watchlist — MovieApp</title>
+  <title>Watched Movies — MovieApp</title>
   <link rel="icon" href="/images/icon.png" type="image/png" />
   <link rel="shortcut icon" href="/images/icon.png" type="image/png" />
   <link rel="apple-touch-icon" href="/images/icon.png" />
@@ -36,7 +36,7 @@
   <main class="hero" style="min-height:auto; padding-top:90px;">
     <div class="hero-box">
       <div class="section-header">
-        <h2>My Watchlist</h2>
+        <h2>Watched Movies</h2>
       </div>
 
       <div id="grid" class="results results-large"></div>
@@ -72,11 +72,13 @@
 
     function cardHTML(m) {
       const poster = (m.poster && m.poster !== "N/A") ? m.poster : "https://via.placeholder.com/500x750?text=No+Image";
+      const commentHTML = m.comment ? `<p class="watched-comment">${m.comment}</p>` : "";
       return `
           <div class="movie-card movie-card-lg">
             <img src="${poster}" alt="${m.title}" />
             <div class="overlay">
               <h3>${m.title}</h3>
+              ${commentHTML}
               <div class="overlay-actions">
                 <a class="details-link" href="/movie.html?id=${m.imdb_id}">Details</a>
                 <button class="wl-btn active" data-remove="${m.imdb_id}">Remove</button>
@@ -86,9 +88,9 @@
         `;
     }
 
-    async function removeFromWatch(id) {
+    async function removeFromWatched(id) {
       try {
-        const res = await fetch(`/api/watchlist/${id}`, { method: "DELETE" });
+        const res = await fetch(`/api/watched/${id}`, { method: "DELETE" });
         if (res.ok) {
           render();
         } else {
@@ -101,13 +103,13 @@
 
     async function render() {
       try {
-        const res = await fetch("/api/watchlist");
-        if (!res.ok) throw new Error("Failed to fetch watchlist");
+        const res = await fetch("/api/watched");
+        if (!res.ok) throw new Error("Failed to fetch watched list");
 
         const list = await res.json();
 
         if (list.length === 0) {
-          grid.innerHTML = `<p class="strip-loading">Your watchlist is empty. Browse and add some movies!</p>`;
+          grid.innerHTML = `<p class="strip-loading">You haven't added any watched movies yet.</p>`;
           return;
         }
         grid.innerHTML = "";
@@ -119,10 +121,10 @@
         });
 
         grid.querySelectorAll("[data-remove]").forEach(btn => {
-          btn.addEventListener("click", () => removeFromWatch(btn.getAttribute("data-remove")));
+          btn.addEventListener("click", () => removeFromWatched(btn.getAttribute("data-remove")));
         });
       } catch (err) {
-        grid.innerHTML = `<p style="color:red;">Error loading watchlist: ${err.message}</p>`;
+        grid.innerHTML = `<p style="color:red;">Error loading watched list: ${err.message}</p>`;
       }
     }
 

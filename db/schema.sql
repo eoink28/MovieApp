@@ -15,3 +15,15 @@ CREATE TABLE IF NOT EXISTS watchlist (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, imdb_id)
 );
+
+CREATE TABLE IF NOT EXISTS watched (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    imdb_id VARCHAR(20) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    poster VARCHAR(500),
+    year VARCHAR(20),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, imdb_id)
+);

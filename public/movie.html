@@ -26,6 +26,7 @@
         <ul id="menuDropdown" class="dropdown">
           <li><a href="/">Home</a></li>
           <li><a href="/watchlist.html">My Watchlist</a></li>
+          <li><a href="/watched.html">Watched</a></li>
           <li><a href="/settings.html">Account Settings</a></li>
         </ul>
       </div>
@@ -51,9 +52,10 @@
       }
     });
 
-    // Auth & Watchlist
+    // Auth, Watchlist & Watched
     let currentUser = null;
     let inWatchlist = false;
+    let inWatched = false;
 
     async function checkStatus(imdbID) {
       try {
@@ -67,6 +69,13 @@
           if (listRes.ok) {
             const list = await listRes.json();
             inWatchlist = list.some(m => m.imdb_id === imdbID);
+          }
+
+          // Check if in watched
+          const wRes = await fetch("/api/watched");
+          if (wRes.ok) {
+            const wlist = await wRes.json();
+            inWatched = wlist.some(m => m.imdb_id === imdbID);
           }
         }
       } catch (err) {
@@ -136,6 +145,7 @@
               <div style="display:flex; gap:10px; margin-top:10px;">
                 <a href="/" class="details-link back-btn">← Back</a>
                 <button id="wlBtn" class="wl-btn">Loading...</button>
+                <button id="watchedBtn" class="wl-btn">Loading...</button>
               </div>
             </div>
           `;
@@ -145,6 +155,61 @@
         document.getElementById("wlBtn").addEventListener("click", () => {
           toggleWatchlist({ imdbID: m.imdbID, Title: m.Title, Poster: poster, Year: m.Year || "" });
         });
+
+        // Watched button logic
+        const watchedBtn = document.getElementById("watchedBtn");
+        if (watchedBtn) {
+          function updateWatchedButton() {
+            watchedBtn.textContent = inWatched ? "✓ Watched" : "+ Watched";
+            watchedBtn.classList.toggle("active", inWatched);
+          }
+
+          updateWatchedButton();
+
+          async function toggleWatched(movie) {
+            if (!currentUser) {
+              window.location.href = "/login.html";
+              return;
+            }
+
+            if (inWatched) {
+              // remove
+              try {
+                const res = await fetch(`/api/watched/${movie.imdbID}`, { method: "DELETE" });
+                if (res.ok) {
+                  inWatched = false;
+                  updateWatchedButton();
+                } else {
+                  alert("Action failed");
+                }
+              } catch (err) {
+                console.error("Toggle failed", err);
+              }
+            } else {
+              // prompt for a comment then add
+              const comment = prompt("Add an optional comment about this movie:", "");
+              try {
+                const res = await fetch("/api/watched", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ imdbID: movie.imdbID, Title: movie.Title, Poster: movie.Poster, Year: movie.Year, comment })
+                });
+                if (res.ok) {
+                  inWatched = true;
+                  updateWatchedButton();
+                } else {
+                  alert("Action failed");
+                }
+              } catch (err) {
+                console.error("Toggle failed", err);
+              }
+            }
+          }
+
+          watchedBtn.addEventListener("click", () => {
+            toggleWatched({ imdbID: m.imdbID, Title: m.Title, Poster: poster, Year: m.Year || "" });
+          });
+        }
       } catch (err) {
         content.innerHTML = `<p style="color:red;">${err.message}</p>`;
         console.error(err);

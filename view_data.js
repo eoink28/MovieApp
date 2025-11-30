@@ -28,6 +28,22 @@ async function viewData() {
             }
         }
 
+        // Watched
+        console.log("\n--- Watched Table ---");
+        try {
+            const watched = await pool.query("SELECT * FROM watched");
+            console.log(`Found ${watched.rows.length} items in watched.`);
+            if (watched.rows.length > 0) {
+                console.log(JSON.stringify(watched.rows, null, 2));
+            }
+        } catch (err) {
+            if (err.code === '42P01') { // undefined_table
+                console.log("Watched table does not exist yet.");
+            } else {
+                console.error("Error fetching watched:", err.message);
+            }
+        }
+
     } catch (err) {
         console.error("Database Error:", err);
     } finally {
